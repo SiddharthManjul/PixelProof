@@ -3,7 +3,7 @@ import { Josefin_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { WalletStoreProvider } from "../providers/walletStoreProvider";
 import { PolkadotWalletsContextProvider } from "../providers/polkadotWalletsContextProvider.client";
-
+import Navbar from "../components/navbar";
 
 // const inter = Inter({ subsets: ["latin"] });
 const josefin = Josefin_Sans({
@@ -33,6 +33,7 @@ export default function RootLayout({
       <PolkadotWalletsContextProvider>
         <body className={`${josefin.variable} ${grotesk.variable}`}>
           <WalletStoreProvider>
+            <Navbar />
             {children}
           </WalletStoreProvider>
         </body>

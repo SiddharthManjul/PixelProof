@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useState, useCallback, useMemo } from "react";
 import { useWallets } from "@polkadot-onboard/react";
 import { useWalletStore } from "../providers/walletStoreProvider";
@@ -127,6 +128,8 @@ const WalletModal: React.FC<{
 };
 
 const Header: React.FC = () => {
+  const router = useRouter();
+
   const {
     connectedWallet,
     connectedAccount,
@@ -166,6 +169,7 @@ const Header: React.FC = () => {
         const walletAccounts = await wallet.getAccounts();
         if (walletAccounts && walletAccounts.length > 0) {
           await connectAccount(walletAccounts[0]);
+          router.push("/imgCapture")
         }
       } catch (error) {
         console.error("Error connecting wallet:", error);
@@ -182,6 +186,7 @@ const Header: React.FC = () => {
     disconnectWallet();
     disconnectAccount();
     setShowAccounts(false);
+    router.push("/");
   }, [disconnectWallet, disconnectAccount]);
 
   const truncatedAddress = useMemo(
@@ -209,7 +214,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-transparent text-black p-4 flex justify-between items-center px-12 top-0">
-      <a href="/" className="font-josefin text-3xl font-bold">PixelProof</a>
+      {/* <a href="/" className="font-josefin text-3xl font-bold">PixelProof</a> */}
       <div className="flex items-center space-x-4">
         {connectedWallet?.isConnected && connectedAccount ? (
           <>

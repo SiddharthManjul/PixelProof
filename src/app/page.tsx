@@ -3,8 +3,9 @@
 import RetroGrid from "../components/ui/retro-grid";
 import WordPullUp from "../components/ui/word-pull-up";
 import { AnimatedTestimonials } from "../components/ui/animated-testimonials";
-import { RainbowButton } from "../components/ui/rainbow-button";
+// import { RainbowButton } from "../components/ui/rainbow-button";
 import { CanvasRevealEffectComp } from "../components/custom/custom-canvas";
+// import Header from "../components/Header";
 
 import Image from "next/image";
 
@@ -47,14 +48,8 @@ export default function RetroGridDemo() {
     },
   ];
   return (
-    <div className="bg-[#2E073F]">
-      <div className="relative flex h-[600px] md:h-screen w-full flex-col md:items-left justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
-        <h1 className="hidden md:block absolute top-8 left-8 font-grotesk font-bold text-4xl text-[#17153B]">
-          PixelProof
-        </h1>
-        <div>
-          <RainbowButton className="bg-black top-4 right-4 md:right-8 absolute font-grotesk md:top-8">Login/Signup</RainbowButton>
-        </div>
+    <div className="bg-[#2E073F] relative">
+      <div className="relative flex h-[600px] md:h-screen w-full flex-col md:items-left justify-center overflow-hidden bg-background md:shadow-xl">
         <span className="pl-24 md:pl-12 lg:pl-0 pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#17153B] via-[#17153B] to-[#17153B] font-josefin pb-12 bg-clip-text text-center md:text-left mr-12 pr-96 text-7xl font-bold leading-none tracking-normal text-transparent">
           <WordPullUp
             className="text-4xl font-bold tracking-[-0.02em] text-[#17153B] dark:text-white md:text-7xl md:leading-[5rem]"
@@ -91,7 +86,9 @@ export default function RetroGridDemo() {
         </div>
       </div>
       <div>
-        <h1 className="text-white font-josefin text-5xl font-bold w-full text-center pb-8">Solution</h1>
+        <h1 className="text-white font-josefin text-5xl font-bold w-full text-center pb-8">
+          Solution
+        </h1>
         <div className="relative bg-black-100 flex justify-center items-center flex-col mx-auto sm:px-10 px-5 pb-8 overflow-clip">
           <CanvasRevealEffectComp />
         </div>

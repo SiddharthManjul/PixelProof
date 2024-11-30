@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.2.2",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
     "@polkadot-onboard/core": "^1.1.0",
     "@polkadot-onboard/injected-wallets": "^1.1.0",
     "@polkadot-onboard/react": "^1.1.0",
@@ -22,7 +25,9 @@
     "lucide-react": "^0.447.0",
     "next": "14.2.14",
     "react": "^18",
+    "react-camera-pro": "^1.4.0",
     "react-dom": "^18",
+    "react-webcam": "^7.2.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.170.0",
