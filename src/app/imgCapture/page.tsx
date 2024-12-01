@@ -27,6 +27,7 @@ export default function App() {
   const imageSrcRef = useRef<string | null>(null);
   const [isLocationReady, setIsLocationReady] = useState<boolean>(false);
   const [isImageCaptured, setIsImageCaptured] = useState<boolean>(false);
+  const ipfsHashRef = useRef<string | null>(null);
 
   useEffect(() => {
     timestampRef.current = new Date().toISOString();
@@ -59,10 +60,14 @@ export default function App() {
       try {
         const uploadResult = await pinata.upload.json({base64Data});
         console.log('Upload successful:', uploadResult);
+        console.log(uploadResult.IpfsHash);
+        ipfsHashRef.current = uploadResult.IpfsHash;
       } catch (error) {
         console.error('Upload failed:', error);
       }
     }
+    console.log("Uploaded",ipfsHashRef);
+    
   };
 
   const handleDelete = () => {
