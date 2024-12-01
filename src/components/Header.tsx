@@ -169,7 +169,7 @@ const Header: React.FC = () => {
         const walletAccounts = await wallet.getAccounts();
         if (walletAccounts && walletAccounts.length > 0) {
           await connectAccount(walletAccounts[0]);
-          router.push("/imgCapture")
+          // router.push("/imgCapture")
         }
       } catch (error) {
         console.error("Error connecting wallet:", error);
@@ -186,7 +186,7 @@ const Header: React.FC = () => {
     disconnectWallet();
     disconnectAccount();
     setShowAccounts(false);
-    router.push("/");
+    // router.push("/");
   }, [disconnectWallet, disconnectAccount]);
 
   const truncatedAddress = useMemo(

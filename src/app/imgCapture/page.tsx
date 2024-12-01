@@ -1,18 +1,16 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import Webcam from "react-webcam";
 import { RainbowButton } from "@/src/components/ui/rainbow-button";
-import EXIF from "exif-js";
+import UploadToPinata from "@/src/utils/config";
+import { PinataSDK } from "pinata-web3";
 
-interface Metadata {
-  description?: string;
-  dateTime?: string;
-  gpsLocation?: {
-    lat: number;
-    lng: number;
-  } | null;
-}
+const pinata = new PinataSDK({
+  pinataJwt: process.env.NEXT_PUBLIC_PINATA_JWT!,
+  pinataGateway: "ivory-tough-leech-456.mypinata.cloud",
+});
+
 
 const videoConstraints = {
   width: 720,
@@ -23,42 +21,58 @@ const videoConstraints = {
 export default function App() {
   const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
   const webcamRef = useRef<Webcam>(null);
-  const [url, setUrl] = useState<string | null>(null);
-  const [metadata, setMetadata] = useState<Metadata | null>(null);
+  const urlRef = useRef<string | null>(null);
+  const timestampRef = useRef<string | null>(null);
+  const locationRef = useRef<{ lat: number; lng: number } | null>(null);
+  const imageSrcRef = useRef<string | null>(null);
+  const [isLocationReady, setIsLocationReady] = useState<boolean>(false);
+  const [isImageCaptured, setIsImageCaptured] = useState<boolean>(false);
+
+  useEffect(() => {
+    timestampRef.current = new Date().toISOString();
+  }, []);
 
   const capture = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot();
-    if (imageSrc) {
-      setUrl(imageSrc);
-
-      // Extract metadata from the image
-      const img = new Image();
-      img.src = imageSrc;
-
-      img.onload = function () {
-        EXIF.getData(img as never, () => {
-          const description = EXIF.getTag(this, "ImageDescription");
-          const dateTime = EXIF.getTag(this, "DateTime");
-          const gpsLat = EXIF.getTag(this, "GPSLatitude");
-          const gpsLng = EXIF.getTag(this, "GPSLongitude");
-
-          // Store extracted metadata in state
-          setMetadata({
-            description,
-            dateTime,
-            gpsLocation: gpsLat && gpsLng ? { lat: gpsLat, lng: gpsLng } : null,
-          });;
-        });
-      };
+    if (!timestampRef.current) {
+      console.log("Timestamp is not available yet.");
+      return;
     }
+    const capturedImageSrc = webcamRef.current?.getScreenshot();
+    if (capturedImageSrc) {
+      imageSrcRef.current = capturedImageSrc;
+      urlRef.current = capturedImageSrc;
+      setIsImageCaptured(true);
+    }
+
+    console.log("Captured Image URL:", capturedImageSrc);
+    console.log("Timestamp:", timestampRef.current);
+    console.log("Image Src", urlRef.current);
   }, [webcamRef]);
-  console.log(metadata);
+
+  const handleUpload = async () => {
+    if (imageSrcRef.current) {
+      // Remove the data URL prefix
+      const base64Data = imageSrcRef.current.replace(/^data:image\/\w+;base64,/, '');
+
+      console.log(base64Data);
+      
+      try {
+        const uploadResult = await pinata.upload.json({base64Data});
+        console.log('Upload successful:', uploadResult);
+      } catch (error) {
+        console.error('Upload failed:', error);
+      }
+    }
+  };
+
+  const handleDelete = () => {
+    urlRef.current = null;
+    imageSrcRef.current = null;
+    setIsImageCaptured(false);
+  };
 
   return (
     <>
-      <header>
-        {/* <h1>Click & Extract!</h1> */}
-      </header>
       {isCaptureEnable || (
         <div className="w-full flex flex-col items-center absolute top-36 font-grotesk">
           <RainbowButton onClick={() => setCaptureEnable(true)}>
@@ -79,7 +93,7 @@ export default function App() {
               width={540}
               height={360}
               ref={webcamRef}
-              screenshotFormat="image/webp"
+              screenshotFormat="image/jpeg"
               videoConstraints={videoConstraints}
               className="rounded-xl"
             />
@@ -89,48 +103,45 @@ export default function App() {
           </div>
         </>
       )}
-      {url && (
+      {isImageCaptured && urlRef.current && (
         <>
           <div className="w-full flex flex-col items-center absolute h-screen mt-24 font-grotesk">
-            <img className="rounded-xl" src={url} alt="Screenshot" />
+            <img className="rounded-xl" src={urlRef.current} alt="Screenshot" />
           </div>
           <div className="w-full flex flex-col items-center mt-96 font-grotesk">
             <div className="flex flex-row gap-4">
-              <RainbowButton
-                className=""
-                onClick={() => {
-                  setUrl(null);
-                }}
-              >
+              <RainbowButton onClick={handleDelete}>
                 Delete
               </RainbowButton>
-              <RainbowButton
-                className=""
-                onClick={() => {
-                  setUrl(null);
-                }}
-              >
+              <RainbowButton>
                 Scan
               </RainbowButton>
             </div>
           </div>
         </>
       )}
-      {metadata && (
-        <div>
-          <h2>Metadata:</h2>
+      {isLocationReady && locationRef.current && (
+        <div className="mt-4 font-grotesk">
+          <h3>Location Information:</h3>
           <p>
-            <strong>Description:</strong> {metadata.description}
+            <strong>Latitude:</strong> {locationRef.current.lat}
           </p>
           <p>
-            <strong>Date & Time:</strong> {metadata.dateTime}
+            <strong>Longitude:</strong> {locationRef.current.lng}
           </p>
-          {metadata.gpsLocation && (
-            <p>
-              <strong>Location:</strong> Lat: {metadata.gpsLocation.lat}, Lng:{" "}
-              {metadata.gpsLocation.lng}
-            </p>
-          )}
+        </div>
+      )}
+      {isImageCaptured && urlRef.current && (
+        <div className="w-full flex flex-col items-center mt-8">
+          <RainbowButton onClick={handleUpload}>
+            Upload to Pinata
+          </RainbowButton>
+        </div>
+      )}
+      {timestampRef.current && (
+        <div className="mt-4 font-grotesk">
+          <h3>Timestamp:</h3>
+          <p>{new Date(timestampRef.current).toLocaleString()}</p>
         </div>
       )}
     </>
