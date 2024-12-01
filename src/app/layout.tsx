@@ -4,18 +4,19 @@ import "./globals.css";
 import { WalletStoreProvider } from "../providers/walletStoreProvider";
 import { PolkadotWalletsContextProvider } from "../providers/polkadotWalletsContextProvider.client";
 import Navbar from "../components/navbar";
+import { ImageProvider } from "../utils/imageContext";
 
 // const inter = Inter({ subsets: ["latin"] });
 const josefin = Josefin_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-josefin"
+  variable: "--font-josefin",
 });
 
 const grotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: [],
-  variable: "--font-grotesk"
+  variable: "--font-grotesk",
 });
 
 export const metadata: Metadata = {
@@ -33,8 +34,10 @@ export default function RootLayout({
       <PolkadotWalletsContextProvider>
         <body className={`${josefin.variable} ${grotesk.variable}`}>
           <WalletStoreProvider>
-            <Navbar />
-            {children}
+            <ImageProvider>
+              <Navbar />
+              {children}
+            </ImageProvider>
           </WalletStoreProvider>
         </body>
       </PolkadotWalletsContextProvider>
