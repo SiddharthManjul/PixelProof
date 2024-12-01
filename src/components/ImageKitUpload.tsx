@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -40,7 +41,7 @@ const authenticator = async () => {
 
 export default function ImageKitUploadComponent() {
 
-  const { connectedAccount, isWalletConnected, connectWallet } = useWalletStore(
+  const { connectedAccount, isWalletConnected } = useWalletStore(
     (s) => s
   );
 
@@ -48,7 +49,7 @@ export default function ImageKitUploadComponent() {
   const imageSrcRef = useRef<string | null>(null);
   const urlRef = useRef<string | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [fileSystemImage, setFileSystemImage] = useState<string | null>(null);
+  const [fileSystemImage] = useState<string | null>(null);
   const ipfsHashRef = useRef<string | null>(null);
 
   useEffect(() => {

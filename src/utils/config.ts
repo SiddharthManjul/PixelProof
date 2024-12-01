@@ -6,6 +6,7 @@ const pinata = new PinataSDK({
 });
 
 const UploadToPinata = async (image: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const upload = await pinata.upload.base64(image);
 };
 

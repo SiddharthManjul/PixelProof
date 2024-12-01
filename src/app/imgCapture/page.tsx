@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
@@ -25,7 +26,7 @@ const videoConstraints = {
 export default function App() {
   const router = useRouter();
 
-  const { connectedAccount, isWalletConnected, connectWallet } = useWalletStore(
+  const { connectedAccount, isWalletConnected } = useWalletStore(
     (s) => s
   );
   const [isCaptureEnable, setCaptureEnable] = useState<boolean>(false);
@@ -35,7 +36,7 @@ export default function App() {
   const imageSrcRef = useRef<string | null>(null);
   const [isImageCaptured, setIsImageCaptured] = useState<boolean>(false);
   const ipfsHashRef = useRef<string | null>(null);
-  const { imageSrc, setImageSrc, timestamp, setTimestamp, setIpfsHash } =
+  const { setImageSrc } =
     useImageContext();
 
   useEffect(() => {
