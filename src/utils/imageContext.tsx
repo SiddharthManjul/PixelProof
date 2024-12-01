@@ -1,8 +1,7 @@
 "use client"
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-
-interface ImageContextProps {
+interface ImageContextType {
   imageSrc: string | null;
   setImageSrc: (src: string | null) => void;
   timestamp: string | null;
@@ -11,22 +10,29 @@ interface ImageContextProps {
   setIpfsHash: (hash: string | null) => void;
 }
 
-const ImageContext = createContext<ImageContextProps | undefined>(undefined);
+const ImageContext = createContext<ImageContextType>({
+  imageSrc: null,
+  setImageSrc: () => {},
+  timestamp: null,
+  setTimestamp: () => {},
+  ipfsHash: null,
+  setIpfsHash: () => {},
+});
 
-export function ImageProvider ({ children }: { children: ReactNode }) {
+export const ImageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [timestamp, setTimestamp] = useState<string | null>(null);
   const [ipfsHash, setIpfsHash] = useState<string | null>(null);
 
   return (
-    <ImageContext.Provider
-      value={{
-        imageSrc,
-        setImageSrc,
-        timestamp,
-        setTimestamp,
-        ipfsHash,
-        setIpfsHash,
+    <ImageContext.Provider 
+      value={{ 
+        imageSrc, 
+        setImageSrc, 
+        timestamp, 
+        setTimestamp, 
+        ipfsHash, 
+        setIpfsHash 
       }}
     >
       {children}
@@ -34,10 +40,4 @@ export function ImageProvider ({ children }: { children: ReactNode }) {
   );
 };
 
-export function useImageContext (): ImageContextProps {
-  const context = useContext(ImageContext);
-  if (!context) {
-    throw new Error("useImageContext must be used within an ImageProvider");
-  }
-  return context;
-};
+export const useImageContext = () => useContext(ImageContext);
